@@ -16,7 +16,7 @@ Supervisar el flujo completo del proceso de ensamble mediante una **máquina de 
 ## Diagrama de la FSM
 
 
-![FSM Supervisor](robotica-grupo1-2026/maquina-de-estados-grupo1/images/fsm_supervisor_onehot.png)
+![FSM supervisora one-hot](images/fsm_supervisor_onehot_clean.png)
 
 ## Enfoque de diseño
 
