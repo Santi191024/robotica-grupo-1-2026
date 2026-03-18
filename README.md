@@ -16,12 +16,6 @@ Dentro de `maquina-de-estados-grupo1/` se encuentran:
 - `docs/`: documentación
 - `images/`: diagramas, capturas o imágenes de apoyo
 
-## Integrantes
-
-- Javier Enmanuel Pérez Millán
-- Santiago Acevedo
-- Agregar demás integrantes
-
 ## Observación
 
 Este repositorio funciona como respaldo público en GitHub y como espacio de organización del trabajo colaborativo.
