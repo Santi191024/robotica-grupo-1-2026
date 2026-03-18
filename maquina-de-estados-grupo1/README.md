@@ -10,8 +10,10 @@ Esta carpeta contiene el desarrollo correspondiente al bloque de máquina de est
 
 ## Responsables
 
-- Javier Enmanuel Pérez Millán
-- Santiago Acevedo
+- Juan Sebastian Osuna ALIAS KRUSTY
+- Santiago Acevedo Porras EL GOAT
+- Cristian Orlando El Ratón FIMBAR
+- Julian Piedra, que piedra
 
 ## Estado
 
