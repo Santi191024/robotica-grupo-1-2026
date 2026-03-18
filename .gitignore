@@ -1,0 +1,18 @@
+# VS Code
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# ROS / compilación
+build/
+install/
+log/
+
+# Archivos temporales
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
