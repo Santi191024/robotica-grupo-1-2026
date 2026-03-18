@@ -19,3 +19,5 @@ Dentro de `maquina-de-estados-grupo1/` se encuentran:
 ## Observación
 
 Este repositorio funciona como respaldo público en GitHub y como espacio de organización del trabajo colaborativo.
+
+<img width="715" height="720" alt="image" src="https://github.com/user-attachments/assets/85193eb1-153a-4d3c-8763-656754037004" />
