@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<robot name="scara_robot">
+
+  <link name="world"/>
+
+  <!-- ═══ world_fixed: rpy="0 0 0" — sin rotación global ═══ -->
+  <joint name="world_fixed" type="fixed">
+  <parent link="world"/>
+  <child link="base_link"/>
+  <origin xyz="0 0 0" rpy="1.5707 0.0 0.0"/>
+</joint>
+
+  <!-- ═══ BASE ═══ -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.000308795173563817 0.0724631541983958 0" rpy="0 0 0"/>
+      <mass value="1.98352155085603"/>
+      <inertia ixx="0.00562375833522639" ixy="4.06349060112112E-05" ixz="0"
+               iyy="0.00454937188906693" iyz="0" izz="0.00594621262407018"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/juan-hernandez/ros2_ws/src/scara_robot_description/meshes/base_link.STL"/>
+      </geometry>
+      <material name="gray"><color rgba="0.792 0.819 0.933 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/juan-hernandez/ros2_ws/src/scara_robot_description/meshes/base_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ═══ ESLABÓN 1 ═══ -->
+  <link name="eslabon_1_link">
+    <inertial>
+      <origin xyz="0.00139543547434851 0.0416986454109404 0.0553489464933981" rpy="0 0 0"/>
+      <mass value="0.451975824943596"/>
+      <inertia ixx="0.00153322703971065" ixy="5.12915722694602E-06" ixz="-2.95560461948032E-05"
+               iyy="0.00162827463830212" iyz="0.000203444339870282" izz="0.000361652836930852"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/juan-hernandez/ros2_ws/src/scara_robot_description/meshes/eslabon_1_link.STL"/>
+      </geometry>
+      <material name="blue"><color rgba="0.2 0.4 0.8 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/juan-hernandez/ros2_ws/src/scara_robot_description/meshes/eslabon_1_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Union_1_joint" type="revolute">
+    <origin xyz="0.011085 0.129 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="eslabon_1_link"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="100.0" velocity="3.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <!-- ═══ ESLABÓN 2 ═══ -->
+  <link name="eslabon_2_link">
+    <inertial>
+      <origin xyz="0.00012158598969203 0.0769055267132564 0.0979970469726086" rpy="0 0 0"/>
+      <mass value="1.13458169738042"/>
+      <inertia ixx="0.00558174584463715" ixy="-1.75996834222275E-06" ixz="-3.21281588668783E-06"
+               iyy="0.00368312578801993" iyz="-0.00141851432583485" izz="0.0029922581847244"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/juan-hernandez/ros2_ws/src/scara_robot_description/meshes/eslabon_2_link.STL"/>
+      </geometry>
+      <material name="gray"><color rgba="0.792 0.819 0.933 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/juan-hernandez/ros2_ws/src/scara_robot_description/meshes/eslabon_2_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ═══ rpy="0 0 0" — sin rotación de eslabón 2 ═══ -->
+  <joint name="union_2_joint" type="revolute">
+    <origin xyz="0.0032765 0.033 0.12996" rpy="0 0 0"/>
+    <parent link="eslabon_1_link"/>
+    <child link="eslabon_2_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="100.0" velocity="3.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <!-- ═══ VARILLA (prismático) ═══ -->
+  <link name="varilla_link">
+    <inertial>
+      <origin xyz="0 -0.06 0" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 -0.06 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.012" length="0.12"/></geometry>
+      <material name="white"><color rgba="0.9 0.9 0.9 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.06 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.012" length="0.12"/></geometry>
+    </collision>
+  </link>
+
+  <joint name="prismatic_joint" type="prismatic">
+    <origin xyz="0.00016129 0.185 0.13" rpy="0 0 0"/>
+    <parent link="eslabon_2_link"/>
+    <child link="varilla_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.15" upper="0.0" effort="100.0" velocity="1.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <!-- ═══ Plugins Gazebo ═══ -->
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher"/>
+
+    <plugin filename="gz-sim-joint-position-controller-system"
+            name="gz::sim::systems::JointPositionController">
+      <joint_name>Union_1_joint</joint_name>
+      <topic>/Union_1_joint/cmd_pos</topic>
+      <p_gain>3000</p_gain><i_gain>50</i_gain><d_gain>100</d_gain>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-position-controller-system"
+            name="gz::sim::systems::JointPositionController">
+      <joint_name>union_2_joint</joint_name>
+      <topic>/union_2_joint/cmd_pos</topic>
+      <p_gain>3000</p_gain><i_gain>50</i_gain><d_gain>100</d_gain>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-position-controller-system"
+            name="gz::sim::systems::JointPositionController">
+      <joint_name>prismatic_joint</joint_name>
+      <topic>/prismatic_joint/cmd_pos</topic>
+      <p_gain>2000</p_gain><i_gain>20</i_gain><d_gain>50</d_gain>
+    </plugin>
+  </gazebo>
+
+</robot>

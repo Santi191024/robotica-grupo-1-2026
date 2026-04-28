@@ -1,0 +1,7 @@
+- topic: /joint_states
+  ros: [std_msgs/msg/Header, sensor_msgs/msg/JointState]
+  gz: [gz.msgs.Model, gz.msgs.Joints]
+
+- topic: /scara_arm_controller/joint_trajectory_controller/joint_trajectory
+  ros: [trajectory_msgs/msg/JointTrajectory]
+  gz: [gz.msgs.Model, gz.msgs.TrajectoryCommands]
