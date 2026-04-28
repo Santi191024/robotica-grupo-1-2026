@@ -1,0 +1,291 @@
+
+#include <Arduino.h>
+
+/* =======================
+   DEFINICIÓN DE PINES
+======================= */
+#define ENCODER_A     34
+#define ENCODER_B     35
+#define MOTOR_PWM     32 
+#define MOTOR_DIR1    26
+#define MOTOR_DIR2    27 
+#define PIN_TIMER_TEST 2 
+
+/* =======================
+   PARÁMETROS Y CONSTANTES DE CONTROL
+======================= */
+const float PPR = 588.0 * 2.0; 
+const float Ts = 0.06;         // 50 ms corregido para coincidir con el timer
+const float U_SAT = 1.0;       
+
+// Coeficientes de tu controlador (Asegúrate que coincidan con Ts = 0.05)
+float q0 = 0.071440279472970205625103032383123;
+float q1 = -0.052808002829931600144576648431941;
+float s0 = 0.027212267691221288466968134146098;
+
+// Históricos
+float e_k = 0, e_k1 = 0;
+float u_k = 0, u_k1 = 0, u_k2 = 0;
+
+float referencia = 0.0; 
+volatile long encoderCount = 0;
+long lastCount = 0;
+float rpmFiltered = 0;
+
+hw_timer_t *timer = NULL;
+volatile SemaphoreHandle_t timerSemaphore;
+portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+
+/* =======================
+   FUNCIONES DE SOPORTE
+======================= */
+
+void IRAM_ATTR handleEncoderA() {
+  if (digitalRead(ENCODER_B)) encoderCount++;
+  else encoderCount--;
+}
+
+void ARDUINO_ISR_ATTR onTimer() {
+  digitalWrite(PIN_TIMER_TEST, !digitalRead(PIN_TIMER_TEST));
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  xSemaphoreGiveFromISR(timerSemaphore, &xHigherPriorityTaskWoken);
+  if (xHigherPriorityTaskWoken) portYIELD_FROM_ISR();
+}
+
+void apply_motor_control(float u) {
+  if (u > U_SAT) u = U_SAT;
+  if (u < -U_SAT) u = -U_SAT;
+
+  int dutyCycle = (int)(fabsf(u) * 255.0f);
+  analogWrite(MOTOR_PWM, dutyCycle);
+
+  if (u >= 0) {
+    digitalWrite(MOTOR_DIR1, HIGH);
+    digitalWrite(MOTOR_DIR2, LOW);
+  } else {
+    digitalWrite(MOTOR_DIR1, LOW);
+    digitalWrite(MOTOR_DIR2, HIGH);
+  }
+}
+
+// Nueva función para leer la referencia desde el Serial
+void checkSerial() {
+  if (Serial.available() > 0) {
+    float nuevaRef = Serial.parseFloat();
+    // Limpiar el buffer para evitar lecturas residuales (\n o \r)
+    while(Serial.available() > 0) Serial.read(); 
+    
+    referencia = nuevaRef;
+  }
+}
+
+/* =======================
+   SETUP
+======================= */
+void setup() {
+  Serial.begin(115200);
+  // Timeout corto para que parseFloat no bloquee el loop
+  Serial.setTimeout(5); 
+
+  pinMode(ENCODER_A, INPUT_PULLUP);
+  pinMode(ENCODER_B, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(ENCODER_A), handleEncoderA, RISING);
+
+  pinMode(MOTOR_PWM, OUTPUT);
+  pinMode(MOTOR_DIR1, OUTPUT);
+  pinMode(MOTOR_DIR2, OUTPUT);
+  pinMode(PIN_TIMER_TEST, OUTPUT);
+
+  analogReadResolution(12);
+
+  timerSemaphore = xSemaphoreCreateBinary();
+  timer = timerBegin(1000000); 
+  timerAttachInterrupt(timer, &onTimer);
+  timerAlarm(timer, 60000, true, 0); // 50ms
+}
+
+/* =======================
+   LOOP PRINCIPAL
+======================= */
+void loop() {
+  // Escuchar el puerto serial constantemente
+  checkSerial();
+
+  if (xSemaphoreTake(timerSemaphore, portMAX_DELAY) == pdTRUE) {
+
+    portENTER_CRITICAL(&mux);
+    long currentCount = encoderCount;
+    portEXIT_CRITICAL(&mux);
+    
+    long delta = currentCount - lastCount;
+    lastCount = currentCount;
+    
+    float rpmRaw = ((float)delta / PPR) * (60.0f / Ts);
+    rpmFiltered = 0.8f * rpmFiltered + 0.2f * rpmRaw;
+
+    // Lógica de Control
+    e_k = referencia - rpmFiltered;
+
+    u_k = (q0 * e_k) + (q1 * e_k1) - ((s0 - 1.0f) * u_k1) + (s0 * u_k2);
+
+    apply_motor_control(u_k);
+
+    // Actualizar históricos
+    u_k2 = u_k1;
+    u_k1 = u_k;
+    e_k1 = e_k;
+
+    // Telemetría para MATLAB
+    Serial.print(referencia); Serial.print(",");
+    Serial.print(rpmFiltered); Serial.print(",");
+    Serial.println(u_k);
+  }
+}
+
+Para dos motores:
+
+#include <Arduino.h>
+
+const float PPR = 588.0 * 2.0; 
+const float Ts = 0.06;
+const float U_SAT = 1.0;
+
+float q0 = 0.07144027947;
+float q1 = -0.0528080028;
+float s0 = 0.0272122676;
+
+struct Motor {
+  int ENC_A, ENC_B, PWM, DIR1, DIR2;
+  volatile long encoderCount;
+  long lastCount;
+  float rpmFiltered;
+  float e_k, e_k1, u_k, u_k1, u_k2;
+  float referencia;
+};
+
+// MOTOR 1
+Motor m1 = {34, 35, 27, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0.0};
+
+// MOTOR 2
+Motor m2 = {25, 26, 21, 18, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0.0};
+
+hw_timer_t *timer = NULL;
+SemaphoreHandle_t timerSemaphore;
+portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+
+/* =======================
+   ENCODERS
+======================= */
+void IRAM_ATTR enc1() { 
+  if (digitalRead(m1.ENC_B)) m1.encoderCount++; 
+  else m1.encoderCount--; 
+}
+
+void IRAM_ATTR enc2() { 
+  if (digitalRead(m2.ENC_B)) m2.encoderCount++; 
+  else m2.encoderCount--; 
+}
+
+/* =======================
+   TIMER
+======================= */
+void IRAM_ATTR onTimer() {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  xSemaphoreGiveFromISR(timerSemaphore, &xHigherPriorityTaskWoken);
+  if (xHigherPriorityTaskWoken) portYIELD_FROM_ISR();
+}
+
+/* =======================
+   CONTROL
+======================= */
+void controlMotor(Motor &m) {
+  long currentCount;
+
+  portENTER_CRITICAL(&mux);
+  currentCount = m.encoderCount;
+  portEXIT_CRITICAL(&mux);
+
+  long delta = currentCount - m.lastCount;
+  m.lastCount = currentCount;
+
+  float rpmRaw = ((float)delta / PPR) * (60.0f / Ts);
+  m.rpmFiltered = 0.8f * m.rpmFiltered + 0.2f * rpmRaw;
+
+  m.e_k = m.referencia - m.rpmFiltered;
+
+  m.u_k = (q0 * m.e_k) + (q1 * m.e_k1)
+        - ((s0 - 1.0f) * m.u_k1)
+        + (s0 * m.u_k2);
+
+  if (m.u_k > U_SAT) m.u_k = U_SAT;
+  if (m.u_k < -U_SAT) m.u_k = -U_SAT;
+
+  analogWrite(m.PWM, (int)(fabs(m.u_k) * 255));
+  digitalWrite(m.DIR1, (m.u_k >= 0));
+  digitalWrite(m.DIR2, !(m.u_k >= 0));
+
+  m.u_k2 = m.u_k1; 
+  m.u_k1 = m.u_k; 
+  m.e_k1 = m.e_k;
+}
+
+/* =======================
+   SERIAL
+======================= */
+void checkSerial() {
+  if (Serial.available()) {
+    float val = Serial.parseFloat();
+
+    // Misma referencia para ambos motores
+    m1.referencia = val;
+    m2.referencia = val;
+
+    while (Serial.available()) Serial.read();
+
+    Serial.print("Nueva Referencia OK: "); 
+    Serial.println(val);
+  }
+}
+
+/* =======================
+   SETUP
+======================= */
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(10);
+
+  Motor* grupo[] = {&m1, &m2};
+
+  for(int i=0; i<2; i++) {
+    pinMode(grupo[i]->ENC_A, INPUT_PULLUP);
+    pinMode(grupo[i]->ENC_B, INPUT_PULLUP);
+    pinMode(grupo[i]->PWM, OUTPUT);
+    pinMode(grupo[i]->DIR1, OUTPUT);
+    pinMode(grupo[i]->DIR2, OUTPUT);
+  }
+
+  attachInterrupt(digitalPinToInterrupt(m1.ENC_A), enc1, RISING);
+  attachInterrupt(digitalPinToInterrupt(m2.ENC_A), enc2, RISING);
+
+  timerSemaphore = xSemaphoreCreateBinary();
+  timer = timerBegin(1000000);
+  timerAttachInterrupt(timer, &onTimer);
+  timerAlarm(timer, 60000, true, 0); 
+}
+
+/* =======================
+   LOOP
+======================= */
+void loop() {
+  checkSerial();
+
+  if (xSemaphoreTake(timerSemaphore, portMAX_DELAY)) {
+    controlMotor(m1);
+    controlMotor(m2);
+    
+    // Telemetría: Ref, M1, M2
+    Serial.print(m1.referencia); Serial.print(",");
+    Serial.print(m1.rpmFiltered); Serial.print(",");
+    Serial.println(m2.rpmFiltered);
+  }
+}
