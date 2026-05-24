@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="modeloo_robot">
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.0214489295591795 0.0118816488447023 0.104964936035176" rpy="0 0 0" />
+      <mass value="0.926123621008506" />
+      <inertia
+        ixx="0.00387377560481994"
+        ixy="-1.72108426359553E-08"
+        ixz="0.000316895923552727"
+        iyy="0.00380904010807044"
+        iyz="-3.15689991156166E-08"
+        izz="0.00307135593386164" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/base_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_1">
+    <inertial>
+      <origin xyz="0.0271937079552429 8.79072784429613E-05 -0.0807506685055606" rpy="0 0 0" />
+      <mass value="1.11382686129458" />
+      <inertia
+        ixx="0.00373817619644667"
+        ixy="1.42887439545853E-09"
+        ixz="-0.00155425490991242"
+        iyy="0.00647540537027616"
+        iyz="3.77032061304199E-09"
+        izz="0.0036750950328283" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/1.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_1" type="continuous">
+    <origin xyz="0.00317452085194603 0.0173607499977951 0.4705" rpy="0 0 -0.0169383796661857" />
+    <parent link="base_link" />
+    <child link="link_1" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="link_2">
+    <inertial>
+      <origin xyz="0.0665656586326658 -4.94860483146731E-09 -0.0247660653791445" rpy="0 0 0" />
+      <mass value="0.08825858682679" />
+      <inertia
+        ixx="1.77437222056988E-05"
+        ixy="-1.43153154140994E-11"
+        ixz="9.72147317240164E-06"
+        iyy="0.000209329587920979"
+        iyz="-7.07383231172207E-12"
+        izz="0.000197525273871752" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/2.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_2" type="continuous">
+    <origin xyz="0.177119983449417 8.79717495707033E-05 0.00349999999999986" rpy="0 0 0.0558475226678756" />
+    <parent link="link_1" />
+    <child link="link_2" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="link_3">
+    <inertial>
+      <origin xyz="-0.00851267145727752 -0.00180933891623884 -0.169470453989701" rpy="0 0 0" />
+      <mass value="0.0858106661567014" />
+      <inertia
+        ixx="0.00041845749800686"
+        ixy="-5.57024459914009E-08"
+        ixz="-4.86055189347313E-07"
+        iyy="0.000419842640372626"
+        iyz="1.78889491453982E-08"
+        izz="5.02700896319812E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://modeloo_robot/meshes/3.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_3" type="prismatic">
+    <origin xyz="0.127499999999997 0 0.000999999999999973" rpy="0 0 3.14159265358979" />
+    <parent link="link_2" />
+    <child link="link_3" />
+    <axis xyz="0 0 1" />
+    <limit lower="0.0" upper="0.23" effort="100" velocity="0.2" />
+  </joint>
+
+<ros2_control name="GazeboSimSystem" type="system">
+  <hardware>
+    <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+  </hardware>
+
+  <joint name="joint_1">
+    <command_interface name="position"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+  </joint>
+
+  <joint name="joint_2">
+    <command_interface name="position"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+  </joint>
+
+  <joint name="joint_3">
+    <command_interface name="position"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+  </joint>
+</ros2_control>
+<gazebo>
+  <plugin filename="libgz_ros2_control-system.so"
+          name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+    <parameters>$(find modeloo_robot)/config/robot_controller.yaml</parameters>
+  </plugin>
+</gazebo>
+</robot>

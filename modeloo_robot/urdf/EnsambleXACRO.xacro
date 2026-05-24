@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="modeloo_robot">
+    <xacro:property name="PI" value="3.14159265359" />
+    <xacro:property name="effort" value="30" />
+    <xacro:property name="velocity" value="10" />
+    
+    <xacro:property name="ros_package" value="robot_arm_description"/>
+  
+  <link name="base_link">
+  <visual>
+    <geometry>
+      <mesh filename="/home/gabriel/robotscara/src/modeloo_robot/meshes/base_link.STL"/>
+    </geometry>
+  </visual>
+</link>
+
+
+<link name="link1">
+  <visual>
+    <geometry>
+      <mesh filename="/home/gabriel/robotscara/src/modeloo_robot/meshes/2.STL"/>
+    </geometry>
+  </visual>
+</link>
+
+
+<joint name="joint1" type="continuous">
+  <parent link="base_link"/>
+  <child link="link1"/>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+
+<link name="link2">
+  <visual>
+    <geometry>
+      <mesh filename="/home/gabriel/robotscara/src/modeloo_robot/meshes/3.STL"/>
+    </geometry>
+  </visual>
+</link>
+
+
+<joint name="joint2" type="continuous">
+  <parent link="link1"/>
+  <child link="link2"/>
+  <origin xyz="0.12 0 0.19" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+
+<link name="link3">
+  <visual>
+    <geometry>
+      <mesh filename="/home/gabriel/robotscara/src/modeloo_robot/meshes/4.STL"/>
+    </geometry>
+  </visual>
+</link>
+
+
+<joint name="joint3" type="prismatic">
+  <parent link="link2"/>
+  <child link="link3"/>
+  <origin xyz="0.10467837788441 0.0586722865029868 0"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="0.0" upper="0.12" effort="100" velocity="0.5"/>
+</joint>
+
+</robot>

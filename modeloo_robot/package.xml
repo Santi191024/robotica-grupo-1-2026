@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>modeloo_robot</name>
+  <version>0.0.0</version>
+  <description>Ejecutor de trayectorias desde CSV</description>
+
+  <maintainer email="gabriel@example.com">Gabriel</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>pandas</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
