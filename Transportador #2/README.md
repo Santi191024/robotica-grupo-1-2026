@@ -9,8 +9,8 @@ Para garantizar el correcto funcionamiento del sistema, se implementará una arq
 Integrantes:
 
 Oscar ayala 
-Vanessa Cardenas
-Manuel Hoyos
+,Vanessa Cardenas
+,Manuel Hoyos
 
 
 Estado del proyecto:
