@@ -1,0 +1,46 @@
+Puntos de trayectorias
+
+Home: X= 18.59, Y=12.43, Z=30
+
+Punto 1: X=0, Y=-21.76, Z=30 // Arriba del pin pon t=2 s, q1p=1.63, q2p=0.10, q3p=0.10
+
+Punto 2: X=0, Y=-21.76, Z=15 // Recoger el pin pon t=0.6s, q1p=0, q2p=-1.55, q3p=-0.1196
+
+Punto 3: X=0, Y=-21.76, Z=30 // Arriba del pin pon t=0.6s, q1p=0, q2p=1.66, q3p=-1.5811
+
+Punto 4: X=17.15, Y=10.24, Z=20 //Arriba colocación primer pin pon t=1.97s, q1p=1.58, q2p=0.57, q3p=0.40
+
+Punto 5: X=17.15, Y=10.24, Z=10 // Colocar primer pin pon t = 0.45s, q1p=0, q2p=-1.05, q3p=-0.5031
+
+Punto 6:X=17.15, Y=10.24, Z=20 //Arriba colocación primer pin pon t=0.5, q1p=0, q2p=1.5646, q3p=-0.4993
+
+Punto 7: X= 18.59, Y=12.43, Z=30 // Volver a home t=0.6801, q1p=0.10, q2p=1.58, q3p=1.35
+
+Punto 8: X=0, Y=-21.76, Z=30 // Arriba del pin pon t=2 s, q1p=1.63, q2p=0.10, q3p=0.10
+
+Punto 9: X=0, Y=-21.76, Z=15 // Recoger el pin pon t=0.75s, q1p=0, q2p=-1.2977, q3p=0.0232
+
+Punto 10: X=0, Y=-21.76, Z=30 // Arriba del pin pon t=0.75s, q1p=0, q2p=1.3334, q3p=-1.2374
+
+Punto 11: X=23.09, Y=10.24, Z=20 // Arriba Colocación Segundo pin pon t=1.86s, q1p=1.58, q2p=0.50, q3p=0.12
+
+Punto 12:  X=23.09, Y=10.24, Z=10 // Colocar segundo pin pon t=0.33s, q1p=0, q2p=-1.1678, q3p=-0.5859
+
+Punto 13: X=23.09, Y=10.24, Z=20 // Arriba Colocación Segundo pin pon t=0.4s, q1p=0, q2p=1.5096, q3p=-0.5300
+
+Punto 14: X= 18.59, Y=12.43, Z=30 // Volver a home t=0.55s, q1p=0.44, q2p=1.58, q3p=0.57
+
+Punto 15:  X=0, Y=-21.76, Z=30 // Arriba del pin pon t=2 s, q1p=1.63, q2p=0.10, q3p=0.10
+
+Punto 16: X=0, Y=-21.76, Z=15 // Recoger el pin pon t=0.6s, q1p=0, q2p=-1.6151, q3p=0.0064 
+
+Punto 17: X=0, Y=-21.76, Z=30 // Arriba del pin pon t=0.6s, q1p=0, q2p=1.6664, q3p=-1.5680
+
+Punto 18: X=20.07, Y=5.47, Z=30 // Arriba tercer pin pon t=1.72s, q1p=1.58, q2p=0.10, q3p=0.10
+
+Punto 19: X=20.07, Y=5.47, Z=10 // Poner tercer pin pon t=0.8s, q1p=0, q2p=-1.2219, q3p=-0.5845
+
+Punto 20: X=20.07, Y=5.47, Z=30 // Arriba tercer pin pon t=0.8s, q1p=0, q2p=1.6740, q3p=-1.583 // vel=0.15 [m/s]
+
+punto 21: Home: X= 18.59, Y=12.43, Z=30 // Fin t=0.3031s, q1p=1.58, q2p=0.10, q3p=0.43
+
